@@ -1,29 +1,28 @@
-// routes/bookings.js
 const express = require('express');
 const router = express.Router();
-const bookingController = require('../controllers/Booking');
-const app = express();
-app.post('/api/bookings', (req, res) => {
-    const { packages, numberOfPassengers, totalAmount } = req.body;
-  
-    // Create booking logic
-    const newBooking = {
-      packages, // Array of packages
-      numberOfPassengers,
-      totalAmount,
-      // Add other booking details
-    };
-  
-    // Save booking to database
-    // Example: MongoDB
-    Booking.create(newBooking, (err, booking) => {
-      if (err) {
-        return res.status(500).json({ message: 'Error saving booking' });
-      }
+const Booking = require('../models/Booking');
+router.post('/booking', async (req, res) => {
+  try {
+      const newBooking = new Booking(req.body);
+      const booking = await newBooking.save();
       res.status(201).json({ message: 'Booking successful', booking });
-    });
-  });
-   // Create a new booking
-router.get('/orders', bookingController.getAllBookings); // Fetch all bookings
+  } catch (error) {
+      console.error('Error saving booking:', error.message || error); // Log detailed error
+      res.status(500).json({ message: 'Error saving booking', error: error.message });
+  }
+});
+
+
+
+// GET: Fetch all bookings for admin
+router.get('/orders', async (req, res) => {
+  try {
+    const bookings = await Booking.find().populate('packages.packageId');
+    res.status(200).json(bookings);
+  } catch (error) {
+    console.error('Error fetching bookings:', error);
+    res.status(500).json({ message: 'Error fetching bookings' });
+  }
+});
 
 module.exports = router;

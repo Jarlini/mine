@@ -54,6 +54,8 @@ app.get('/api/users/email/:email', async (req, res) => {
       res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+app.use('/api/bookings', bookingRoutes);
+
 app.get('/api/admin/orders', (req, res) => {
     // Add logic to return the orders
     res.send({ orders: [] });
