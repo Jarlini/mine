@@ -1,5 +1,7 @@
 // server.js
 const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 const cors = require('cors');
 const connectDB = require('./config/db'); // Make sure this connects to your MongoDB
 const authRoutes = require('./routes/auth'); // Authentication routes
@@ -34,6 +36,7 @@ app.use('/api/bookings', bookingRoutes); // Add booking routes
 
 // Static files
 app.use('/uploads', express.static('uploads'));
+
 
 // Test Route
 app.get('/', (req, res) => {
